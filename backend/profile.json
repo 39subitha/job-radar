@@ -28,7 +28,10 @@
     "vorrichtungskonstrukteur",
     "vorrichtungsbau",
     "betriebsmittelkonstrukteur",
-    "werkzeugkonstrukteur"
+    "werkzeugkonstrukteur",
+    "치공구",
+    "지그",
+    "jig/fixture"
   ],
   "title_medium": [
     "manufacturing engineer",
@@ -52,7 +55,16 @@
     "ingeniero de procesos",
     "ingeniero de fabricación",
     "ingeniero de diseño",
-    "industrial engineering"
+    "industrial engineering",
+    "금형",
+    "설비설계",
+    "생산기술",
+    "공정설계",
+    "기구설계",
+    "철도차량",
+    "대차",
+    "설비기술",
+    "생산설비"
   ],
   "title_exclude": [
     "software",
@@ -123,7 +135,12 @@
     "outillage",
     "utillaje",
     "vorrichtung",
-    "vorrichtungen"
+    "vorrichtungen",
+    "치공구",
+    "지그",
+    "철도차량",
+    "대차",
+    "철도"
   ],
   "skills_medium": [
     "enovia",
@@ -145,7 +162,11 @@
     "dfm",
     "dfma",
     "jigs",
-    "ergonomic"
+    "ergonomic",
+    "금형",
+    "생산기술",
+    "기구설계",
+    "용접"
   ],
   "domain": [
     "rail",
@@ -157,7 +178,10 @@
     "train",
     "tram",
     "carbody",
-    "car body"
+    "car body",
+    "철도",
+    "철도차량",
+    "대차"
   ],
   "home_country": "India",
   "home_keywords": [

@@ -372,3 +372,7 @@ def fetch_aggregators(terms, is_relevant):
             j["source"] = "aggregator"
             result.append(j)
     return result
+
+# Korean career sites live in their own module
+from sources_korea import FULL_LIST as _KOREA_FULL_LIST  # noqa: E402
+FULL_LIST.update(_KOREA_FULL_LIST)

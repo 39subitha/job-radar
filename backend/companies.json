@@ -41,7 +41,8 @@
   },
   "extra_terms": [
    "rolling stock",
-   "bogie"
+   "bogie",
+   "Korea"
   ],
   "careers": "https://hitachi.wd1.myworkdayjobs.com/hitachi"
  },
@@ -71,7 +72,8 @@
   "extra_terms": [
    "Vorrichtung",
    "Vorrichtungskonstrukteur",
-   "rolling stock"
+   "rolling stock",
+   "Republic of Korea"
   ],
   "careers": "https://jobs.siemens.com/en_US/externaljobs"
  },
@@ -124,7 +126,8 @@
    "company": "Wabtec"
   },
   "extra_terms": [
-   "rail"
+   "rail",
+   "Korea"
   ],
   "careers": "https://jobs.smartrecruiters.com/Wabtec"
  },
@@ -252,7 +255,9 @@
    "wdn": 5,
    "site": "APTIV_CAREERS"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://aptiv.wd5.myworkdayjobs.com/APTIV_CAREERS"
  },
  {
@@ -265,7 +270,9 @@
    "wdn": 5,
    "site": "BorgWarner_Careers"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://borgwarner.wd5.myworkdayjobs.com/BorgWarner_Careers"
  },
  {
@@ -278,7 +285,9 @@
   },
   "extra_terms": [
    "Vorrichtung",
-   "Vorrichtungskonstrukteur"
+   "Vorrichtungskonstrukteur",
+   "Korea",
+   "Yongin"
   ],
   "careers": "https://jobs.smartrecruiters.com/BoschGroup"
  },
@@ -366,7 +375,9 @@
    "wdn": 3,
    "site": "valeo_jobs"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://valeo.wd3.myworkdayjobs.com/valeo_jobs"
  },
  {
@@ -378,7 +389,10 @@
    "host": "jobs.volvogroup.com",
    "locale": "en_US"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea",
+   "Changwon"
+  ],
   "careers": "https://jobs.volvogroup.com"
  },
  {
@@ -417,7 +431,9 @@
    "wdn": 3,
    "site": "external_career_page"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://abb.wd3.myworkdayjobs.com/external_career_page"
  },
  {
@@ -454,7 +470,9 @@
    "host": "eaton.eightfold.ai",
    "domain": "eaton.com"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://eaton.eightfold.ai/careers"
  },
  {
@@ -517,7 +535,9 @@
    "wdn": 3,
    "site": "Airbus"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://ag.wd3.myworkdayjobs.com/Airbus"
  },
  {
@@ -566,7 +586,9 @@
    "wdn": 5,
    "site": "REC_RTX_Ext_Gateway"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway"
  },
  {
@@ -603,7 +625,9 @@
    "site": "CX_1",
    "public_base": "https://careers.honeywell.com/en/sites/Honeywell"
   },
-  "extra_terms": [],
+  "extra_terms": [
+   "Korea"
+  ],
   "careers": "https://careers.honeywell.com/en/sites/Honeywell"
  },
  {
@@ -679,16 +703,316 @@
   "careers": "https://thales.wd3.myworkdayjobs.com/Careers"
  },
  {
+  "name": "Hyundai Rotem",
+  "industry": "rail",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hyundai-rotem"
+  },
+  "extra_terms": [],
+  "careers": "https://hyundai-rotem.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Woojin Industrial Systems",
+  "industry": "rail",
+  "status": "ok",
+  "type": "board_php",
+  "params": {
+   "url": "https://www.wjis.co.kr/kr/recruit/recruit_list.php"
+  },
+  "extra_terms": [],
+  "careers": "https://www.wjis.co.kr/kr/recruit/recruit_list.php",
+  "country": "South Korea"
+ },
+ {
+  "name": "Korea Aerospace Industries (KAI)",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "koreaaero"
+  },
+  "extra_terms": [],
+  "careers": "https://koreaaero.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hyundai Mobis",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "mobis"
+  },
+  "extra_terms": [],
+  "careers": "https://mobis.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hyundai WIA",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hyundai-wia"
+  },
+  "extra_terms": [],
+  "careers": "https://hyundai-wia.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hyundai Transys",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hyundai-transys"
+  },
+  "extra_terms": [],
+  "careers": "https://hyundai-transys.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hyundai Kefico",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hyundai-kefico"
+  },
+  "extra_terms": [],
+  "careers": "https://hyundai-kefico.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hyundai Steel",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hyundai-steel"
+  },
+  "extra_terms": [],
+  "careers": "https://hyundai-steel.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "HD Hyundai group (HHI, HD Hyundai CE/Infracore, Samho, Mipo, Electric, Marine Engine)",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hd"
+  },
+  "extra_terms": [],
+  "careers": "https://hd.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "LS Electric",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "lselectric"
+  },
+  "extra_terms": [],
+  "careers": "https://lselectric.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "LS Mtron",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "lsmtron"
+  },
+  "extra_terms": [],
+  "careers": "https://lsmtron.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "SeAH group",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "seah"
+  },
+  "extra_terms": [],
+  "careers": "https://seah.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hyundai Glovis",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "glovis"
+  },
+  "extra_terms": [],
+  "careers": "https://glovis.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hyundai Motor Company",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "hkmc",
+  "params": {
+   "base": "https://talent.hyundai.com",
+   "svc": "HM",
+   "hgr": "1",
+   "ext": "hc"
+  },
+  "extra_terms": [],
+  "careers": "https://talent.hyundai.com/apply/applyList.hc",
+  "country": "South Korea"
+ },
+ {
+  "name": "Kia",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "hkmc",
+  "params": {
+   "base": "https://career.kia.com",
+   "svc": "KM",
+   "hgr": "2",
+   "ext": "kc"
+  },
+  "extra_terms": [],
+  "careers": "https://career.kia.com/apply/applyList.kc",
+  "country": "South Korea"
+ },
+ {
+  "name": "Samsung group (incl. Samsung Heavy Industries)",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "samsung",
+  "params": {},
+  "extra_terms": [],
+  "careers": "https://www.samsungcareers.com/hr/",
+  "country": "South Korea"
+ },
+ {
+  "name": "LG group (LG Electronics, LG Energy Solution, LG Innotek, LG Magna...)",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "lgcareers",
+  "params": {},
+  "extra_terms": [],
+  "careers": "https://careers.lg.com/apply",
+  "country": "South Korea"
+ },
+ {
+  "name": "SK group (SK On, SK hynix, SK Oceanplant...)",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "skcareers",
+  "params": {},
+  "extra_terms": [],
+  "careers": "https://www.skcareers.com/Recruit",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hanwha group (Hanwha Aerospace, Hanwha Ocean, Hanwha Systems...)",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "hanwha",
+  "params": {},
+  "extra_terms": [],
+  "careers": "https://www.hanwhain.com/apply/recruit",
+  "country": "South Korea"
+ },
+ {
+  "name": "HL group (HL Mando, HL Klemove, Mando-Brose)",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hlcompany"
+  },
+  "extra_terms": [],
+  "careers": "https://hlcompany.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hanon Systems",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hanonsystems"
+  },
+  "extra_terms": [],
+  "careers": "https://hanonsystems.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hankook Tire",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hankooktire"
+  },
+  "extra_terms": [],
+  "careers": "https://hankooktire.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Nexen Tire",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "nexentire"
+  },
+  "extra_terms": [],
+  "careers": "https://nexentire.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Hwaseung group",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "jobflex",
+  "params": {
+   "sub": "hwaseung"
+  },
+  "extra_terms": [],
+  "careers": "https://hwaseung.recruiter.co.kr/career/home",
+  "country": "South Korea"
+ },
+ {
+  "name": "Doosan group (Enerbility, Bobcat, Robotics)",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "doosan",
+  "params": {},
+  "extra_terms": [],
+  "careers": "https://career.doosan.com/dsp/sa/RecList.jsp",
+  "country": "South Korea"
+ },
+ {
+  "name": "POSCO group",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "posco",
+  "params": {},
+  "extra_terms": [],
+  "careers": "https://recruit.posco.com/h22a01-front/",
+  "country": "South Korea"
+ },
+ {
   "name": "BEML",
   "industry": "rail",
   "status": "unsupported",
   "notes": "bemlindia.in/careers only publishes PDF notifications (wp-content/plugins/career/...pdf); no feed. Could monitor page for new PDF links."
- },
- {
-  "name": "Hyundai Rotem",
-  "industry": "rail",
-  "status": "unsupported",
-  "notes": "Uses hyundai-rotem.recruiter.co.kr (Midas JOBFLEX, Next.js client-rendered, Korean-only, very slow/timeouts from here); recruitment is periodic Korean batch hiring."
  },
  {
   "name": "Medha Servo Drives",
@@ -713,5 +1037,11 @@
   "industry": "aerospace",
   "status": "unsupported",
   "notes": "Cloudflare 403 'Attention Required' on www.safran-group.com/jobs from this machine; no Workday/SR tenant found."
+ },
+ {
+  "name": "Dawonsys",
+  "industry": "rail",
+  "status": "unsupported",
+  "notes": "dawonsys.com behind JS anti-bot cookie challenge; no ATS found; hires via saramin/jobkorea."
  }
 ]

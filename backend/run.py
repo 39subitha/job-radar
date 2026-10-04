@@ -127,8 +127,11 @@ def main():
         if j.get("misses", 0) < DROP_AFTER_MISSES:
             merged[jid] = j
 
+    home_country = {c["name"]: c["country"] for c in companies if c.get("country")}
     for j in merged.values():
         j["country"] = country_of(j.get("location", ""), j.get("india", False))
+        if j["country"] == "Other" and j["company"] in home_country:   # e.g. Korean sites list only the city
+            j["country"] = home_country[j["company"]]
 
     # India first, then abroad; best match first inside each
     out_jobs = sorted(merged.values(), key=lambda j: (not j.get("india"), -j["score"], j["first_seen"]))

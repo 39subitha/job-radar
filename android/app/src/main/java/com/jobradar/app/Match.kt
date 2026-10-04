@@ -11,8 +11,11 @@ object Match {
     private val SLIGHTLY_SENIOR = listOf("senior", "lead", "sr", "staff")
 
     private val cache = HashMap<String, Regex>()
+    private val HANGUL = Regex("[\\uAC00-\\uD7A3]")
     private fun rx(word: String) = cache.getOrPut(word.lowercase()) {
-        Regex("(?<![\\p{L}\\p{N}])" + Regex.escape(word.lowercase()) + "(?:s|es)?(?![\\p{L}\\p{N}])")
+        // Korean words join with particles (치공구설계), so match them anywhere
+        if (HANGUL.containsMatchIn(word)) Regex(Regex.escape(word))
+        else Regex("(?<![\\p{L}\\p{N}])" + Regex.escape(word.lowercase()) + "(?:s|es)?(?![\\p{L}\\p{N}])")
     }
 
     fun has(text: String, word: String) = word.isNotBlank() && rx(word).containsMatchIn(text)

@@ -10,6 +10,8 @@ PROFILE = json.loads((Path(__file__).parent / "profile.json").read_text())
 @lru_cache(maxsize=None)
 def _rx(kw):
     # word match that also accepts plural forms: fixture -> fixtures
+    if re.search(r"[\uac00-\ud7a3]", kw):
+        return re.compile(re.escape(kw))   # Korean words join with particles, so plain substring match
     return re.compile(r"\b" + re.escape(kw.lower()) + r"(?:s|es)?\b")
 
 
