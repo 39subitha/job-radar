@@ -89,6 +89,8 @@ class Repo(private val ctx: Context) {
     }
 }
 
+data class Tracked(val status: Status, val job: Job, val at: Long)
+
 enum class Status(val label: String) { SAVED("Saved"), APPLIED("Applied"), INTERVIEW("Interview"), OFFER("Offer"), REJECTED("Rejected") }
 
 /** Things the user decides on this phone: followed companies, application status, what was already seen. */
@@ -100,12 +102,12 @@ class Prefs(ctx: Context) {
         set(v) = sp.edit().putStringSet("followed", v).apply()
 
     /** id -> status + snapshot of the job, so tracked jobs stay even after the posting closes */
-    fun tracked(): Map<String, Pair<Status, Job>> {
+    fun tracked(): Map<String, Tracked> {
         val o = JSONObject(sp.getString("tracked", "{}")!!)
         return o.keys().asSequence().mapNotNull { id ->
             runCatching {
                 val e = o.getJSONObject(id)
-                id to (Status.valueOf(e.getString("status")) to Job.from(e.getJSONObject("job")))
+                id to Tracked(Status.valueOf(e.getString("status")), Job.from(e.getJSONObject("job")), e.optLong("at"))
             }.getOrNull()
         }.toMap()
     }

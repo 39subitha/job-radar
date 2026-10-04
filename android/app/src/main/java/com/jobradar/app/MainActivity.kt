@@ -54,16 +54,16 @@ class MainActivity : ComponentActivity() {
             val dark = isSystemInDarkTheme()
             val scheme = if (dark) darkColorScheme(primary = Color(0xFF9CC3E6), secondary = Color(0xFFFFC000))
             else lightColorScheme(primary = Color(0xFF1F4E79), secondary = Color(0xFFB07D00))
-            MaterialTheme(colorScheme = scheme) { App(Repo(this), prefs, previousVisit) }
+            MaterialTheme(colorScheme = scheme) { App(Repo(this), prefs, ProfileStore(this), previousVisit) }
         }
     }
 }
 
-private enum class Tab(val label: String) { JOBS("Jobs"), COMPANIES("Companies"), TRACKER("Tracker") }
+private enum class Tab(val label: String) { JOBS("Jobs"), COMPANIES("Companies"), TRACKER("Tracker"), PROFILE("Profile") }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
+private fun App(repo: Repo, prefs: Prefs, store: ProfileStore, previousVisit: String) {
     val scope = rememberCoroutineScope()
     var feed by remember { mutableStateOf(repo.cached()) }
     var loading by remember { mutableStateOf(false) }
@@ -73,6 +73,16 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
     var followed by remember { mutableStateOf(prefs.followed) }
     var tracked by remember { mutableStateOf(prefs.tracked()) }
     var companyFilter by remember { mutableStateOf<String?>(null) }
+    var profile by remember { mutableStateOf(store.load()) }
+    // scores are worked out on the phone from this user's profile
+    var jobs by remember { mutableStateOf<List<Job>?>(null) }
+    var gaps by remember { mutableStateOf<List<Pair<String, Int>>>(emptyList()) }
+    LaunchedEffect(feed, profile) {
+        val f = feed ?: return@LaunchedEffect
+        val scored = withContext(Dispatchers.Default) { Match.rescore(f.jobs, profile) }
+        jobs = scored
+        gaps = withContext(Dispatchers.Default) { Match.skillGap(scored, profile) }
+    }
 
     fun refresh() {
         loading = true; error = null
@@ -120,6 +130,7 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
                                 Tab.JOBS -> Icons.Default.Work
                                 Tab.COMPANIES -> Icons.Default.Business
                                 Tab.TRACKER -> Icons.Default.Checklist
+                                Tab.PROFILE -> Icons.Default.Person
                             }, null)
                         },
                         label = { Text(t.label) },
@@ -134,14 +145,19 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
             }
             val f = feed
-            if (f == null) {
+            val scored = jobs
+            if (tab == Tab.PROFILE) {
+                ProfileScreen(profile, gaps) { profile = it; store.save(it) }
+                return@Column
+            }
+            if (f == null || scored == null) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(if (loading) "Getting jobs…" else "No data yet. Pull refresh when online.")
                 }
                 return@Column
             }
             when (tab) {
-                Tab.JOBS -> JobList(f.jobs, filters, listState, followed, tracked, previousVisit, companyFilter,
+                Tab.JOBS -> JobList(scored, filters, listState, followed, tracked, previousVisit, companyFilter, profile.preferredCountries.toSet(),
                     onClearCompany = { companyFilter = null }) { open = it }
                 Tab.COMPANIES -> CompanyList(f, followed,
                     onToggle = { name ->
@@ -149,7 +165,8 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
                         prefs.followed = followed
                     },
                     onShowJobs = { companyFilter = it; tab = Tab.JOBS })
-                Tab.TRACKER -> Tracker(tracked) { open = it }
+                Tab.TRACKER -> Tracker(tracked, scored, profile.preferredCountries.toSet()) { open = it }
+                Tab.PROFILE -> Unit
             }
         }
     }
@@ -158,7 +175,7 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
     if (current != null) {
         BackHandler { open = null }
         Surface(Modifier.fillMaxSize()) {
-            JobDetail(current, tracked[current.id]?.first, onBack = { open = null }) { st ->
+            JobDetail(current, tracked[current.id]?.status, profile, onBack = { open = null }) { st ->
                 prefs.setStatus(current, st); tracked = prefs.tracked()
             }
         }
@@ -186,8 +203,8 @@ private class JobFilters {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun JobList(
-    jobs: List<Job>, fs: JobFilters, listState: LazyListState, followed: Set<String>, tracked: Map<String, Pair<Status, Job>>,
-    previousVisit: String, companyFilter: String?, onClearCompany: () -> Unit, onOpen: (Job) -> Unit,
+    jobs: List<Job>, fs: JobFilters, listState: LazyListState, followed: Set<String>, tracked: Map<String, Tracked>,
+    previousVisit: String, companyFilter: String?, preferred: Set<String>, onClearCompany: () -> Unit, onOpen: (Job) -> Unit,
 ) {
     var query by fs::query
     var onlyNew by fs::onlyNew
@@ -198,7 +215,7 @@ private fun JobList(
     var sortNewest by fs::sortNewest
     var pickCountry by remember { mutableStateOf(false) }
 
-    val shown = remember(jobs, region, countries, query, onlyNew, onlyFollowed, minScore, sortNewest, followed, companyFilter) {
+    val shown = remember(jobs, preferred, region, countries, query, onlyNew, onlyFollowed, minScore, sortNewest, followed, companyFilter) {
         val q = query.trim().lowercase()
         jobs.filter { j ->
             (companyFilter == null || j.company == companyFilter) &&
@@ -210,7 +227,7 @@ private fun JobList(
                 (q.isEmpty() || q.split(" ").all { w ->
                     j.title.lowercase().contains(w) || j.company.lowercase().contains(w) || j.location.lowercase().contains(w) || j.country.lowercase().contains(w)
                 })
-        }.let { l -> if (sortNewest) l.sortedByDescending { it.firstSeen } else l.sortedWith(compareBy<Job>({ !it.india }, { -it.score })) }
+        }.let { l -> if (sortNewest) l.sortedByDescending { it.firstSeen } else l.sortedWith(compareBy<Job>({ if (preferred.isEmpty()) !it.india else it.country !in preferred }, { -it.score })) }
     }
 
     // new filter -> start from the top; coming back from a job or another tab -> stay where the user was
@@ -240,14 +257,14 @@ private fun JobList(
             FilterChip(onlyNew, { onlyNew = !onlyNew }, { Text("New (48h)") })
             FilterChip(onlyFollowed, { onlyFollowed = !onlyFollowed }, { Text("★ Following") })
             MinScore.entries.forEach { m -> FilterChip(minScore == m, { minScore = m }, { Text(m.label) }) }
-            FilterChip(sortNewest, { sortNewest = !sortNewest }, { Text(if (sortNewest) "Newest first" else "India first, best match") },
+            FilterChip(sortNewest, { sortNewest = !sortNewest }, { Text(if (sortNewest) "Newest first" else "Preferred countries first") },
                 leadingIcon = { Icon(Icons.Default.SwapVert, null, Modifier.size(16.dp)) })
         }
         Text("${shown.size} jobs", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp))
         LazyColumn(state = listState, contentPadding = PaddingValues(bottom = 16.dp)) {
             items(shown, key = { it.id }) { j ->
-                JobCard(j, j.company in followed, tracked[j.id]?.first, isNewerThan(j.firstSeen, previousVisit)) { onOpen(j) }
+                JobCard(j, j.company in followed, tracked[j.id]?.status, isNewerThan(j.firstSeen, previousVisit)) { onOpen(j) }
             }
             if (shown.isEmpty()) item {
                 Text("No jobs match these filters.", Modifier.padding(24.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -333,7 +350,7 @@ private fun JobCard(j: Job, followed: Boolean, status: Status?, isNew: Boolean, 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-private fun JobDetail(j: Job, status: Status?, onBack: () -> Unit, onStatus: (Status?) -> Unit) {
+private fun JobDetail(j: Job, status: Status?, profile: Profile, onBack: () -> Unit, onStatus: (Status?) -> Unit) {
     val ctx = LocalContext.current
     Scaffold(topBar = {
         TopAppBar(
@@ -387,6 +404,8 @@ private fun JobDetail(j: Job, status: Status?, onBack: () -> Unit, onStatus: (St
                     FilterChip(status == s, { onStatus(if (status == s) null else s) }, { Text(s.label) })
                 }
             }
+            Spacer(Modifier.height(12.dp))
+            QuickApplyPanel(j, profile)
             HorizontalDivider(Modifier.padding(vertical = 12.dp))
             Text("Job description", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
@@ -464,15 +483,17 @@ private fun CompanyList(feed: Feed, followed: Set<String>, onToggle: (String) ->
 
 // ---------------------------------------------------------------- Tracker
 
+private const val FOLLOW_UP_DAYS = 10
+
 @Composable
-private fun Tracker(tracked: Map<String, Pair<Status, Job>>, onOpen: (Job) -> Unit) {
-    if (tracked.isEmpty()) {
-        Box(Modifier.fillMaxSize().padding(32.dp), contentAlignment = Alignment.Center) {
-            Text("Jobs you save or apply to appear here.\nOpen a job and set its status.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        return
+private fun Tracker(tracked: Map<String, Tracked>, jobs: List<Job>, preferred: Set<String>, onOpen: (Job) -> Unit) {
+    // strong matches not yet saved or applied to, preferred countries first
+    val ready = remember(tracked, jobs, preferred) {
+        jobs.filter { it.score >= 70 && it.id !in tracked }
+            .sortedWith(compareBy<Job>({ if (preferred.isEmpty()) !it.india else it.country !in preferred }, { -it.score })).take(30)
     }
-    val groups = tracked.values.groupBy({ it.first }, { it.second })
+    val groups = tracked.values.groupBy { it.status }
+    val now = System.currentTimeMillis()
     LazyColumn(contentPadding = PaddingValues(bottom = 16.dp)) {
         item {
             Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -485,19 +506,45 @@ private fun Tracker(tracked: Map<String, Pair<Status, Job>>, onOpen: (Job) -> Un
             }
         }
         Status.entries.forEach { s ->
-            val list = groups[s] ?: return@forEach
+            val list = groups[s]?.sortedByDescending { it.at } ?: return@forEach
             item {
                 Text(s.label, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp, 12.dp, 16.dp, 4.dp))
             }
-            items(list, key = { "t" + it.id }) { j ->
+            items(list, key = { "t" + it.job.id }) { t ->
+                val days = if (t.at > 0) ((now - t.at) / 86_400_000L).toInt() else 0
+                val followUp = s == Status.APPLIED && days >= FOLLOW_UP_DAYS
                 ListItem(
-                    modifier = Modifier.clickable { onOpen(j) },
-                    leadingContent = { ScoreBadge(j.score, 38) },
-                    headlineContent = { Text(j.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                    supportingContent = { Text("${j.company} · ${j.location}", maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                    modifier = Modifier.clickable { onOpen(t.job) },
+                    leadingContent = { ScoreBadge(t.job.score, 38) },
+                    headlineContent = { Text(t.job.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                    supportingContent = {
+                        Column {
+                            Text("${t.job.company} · ${t.job.location}", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            if (followUp) Text("⏰ Applied $days days ago, no update. Time to follow up?",
+                                color = MaterialTheme.colorScheme.secondary, style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                            else if (t.at > 0) Text("${s.label} ${if (days == 0) "today" else "$days days ago"}", style = MaterialTheme.typography.labelSmall)
+                        }
+                    },
                 )
             }
+        }
+        item {
+            Text("Ready to apply – strong matches (70%+)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 0.dp))
+            Text("Not saved or applied yet. Open one and use Quick apply.", style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 16.dp))
+        }
+        if (ready.isEmpty()) item {
+            Text("Nothing waiting right now.", Modifier.padding(16.dp), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        items(ready, key = { "r" + it.id }) { j ->
+            ListItem(
+                modifier = Modifier.clickable { onOpen(j) },
+                leadingContent = { ScoreBadge(j.score, 38) },
+                headlineContent = { Text(j.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                supportingContent = { Text("${j.company} · ${j.location}", maxLines = 1, overflow = TextOverflow.Ellipsis) },
+            )
         }
     }
 }
