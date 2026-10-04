@@ -9,6 +9,10 @@ on:
         description: "Email all open jobs (not only new ones)"
         type: boolean
         default: false
+      no_email:
+        description: "Test run: do not send the email"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -33,7 +37,7 @@ jobs:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           JOOBLE_KEY: ${{ secrets.JOOBLE_KEY }}
-        run: python backend/run.py ${{ inputs.email_all && '--email-all' || '' }}
+        run: python backend/run.py ${{ inputs.email_all && '--email-all' || '' }} ${{ inputs.no_email && '--no-email' || '' }}
       - name: Save job list
         run: |
           git config user.name "job-radar-bot"
