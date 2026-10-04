@@ -185,18 +185,13 @@ private fun App(repo: Repo, prefs: Prefs, store: ProfileStore, previousVisit: St
 
 // ---------------------------------------------------------------- Jobs
 
-private enum class Region(val label: String) { ALL("India + abroad"), INDIA("🇮🇳 India"), ABROAD("🌍 Abroad") }
-
-private enum class MinScore(val label: String, val v: Int) { ALL("All", 0), GOOD("50%+", 50), TOP("70%+", 70) }
+private val MATCH_LEVELS = listOf(0, 40, 50, 60, 70, 80)
 
 private class JobFilters {
     var query by mutableStateOf("")
-    var onlyNew by mutableStateOf(false)
     var onlyFollowed by mutableStateOf(false)
-    var minScore by mutableStateOf(MinScore.ALL)
-    var region by mutableStateOf(Region.ALL)
+    var minScore by mutableStateOf(0)
     var countries by mutableStateOf(emptySet<String>())
-    var sortNewest by mutableStateOf(false)
     var lastKey: Any? = null   // filter values the list was last shown with
 }
 
@@ -207,31 +202,27 @@ private fun JobList(
     previousVisit: String, companyFilter: String?, preferred: Set<String>, onClearCompany: () -> Unit, onOpen: (Job) -> Unit,
 ) {
     var query by fs::query
-    var onlyNew by fs::onlyNew
     var onlyFollowed by fs::onlyFollowed
     var minScore by fs::minScore
-    var region by fs::region
     var countries by fs::countries
-    var sortNewest by fs::sortNewest
     var pickCountry by remember { mutableStateOf(false) }
+    var pickScore by remember { mutableStateOf(false) }
 
-    val shown = remember(jobs, preferred, region, countries, query, onlyNew, onlyFollowed, minScore, sortNewest, followed, companyFilter) {
+    val shown = remember(jobs, preferred, countries, query, onlyFollowed, minScore, followed, companyFilter) {
         val q = query.trim().lowercase()
         jobs.filter { j ->
             (companyFilter == null || j.company == companyFilter) &&
-                j.score >= minScore.v &&
-                (region == Region.ALL || (region == Region.INDIA) == j.india) &&
+                j.score >= minScore &&
                 (countries.isEmpty() || j.country in countries) &&
-                (!onlyNew || isWithinHours(j.firstSeen, 48)) &&
                 (!onlyFollowed || j.company in followed) &&
                 (q.isEmpty() || q.split(" ").all { w ->
                     j.title.lowercase().contains(w) || j.company.lowercase().contains(w) || j.location.lowercase().contains(w) || j.country.lowercase().contains(w)
                 })
-        }.let { l -> if (sortNewest) l.sortedByDescending { it.firstSeen } else l.sortedWith(compareBy<Job>({ if (preferred.isEmpty()) !it.india else it.country !in preferred }, { -it.score })) }
+        }.sortedWith(compareBy<Job>({ if (preferred.isEmpty()) !it.india else it.country !in preferred }, { -it.score }))
     }
 
     // new filter -> start from the top; coming back from a job or another tab -> stay where the user was
-    val key = listOf(region, countries, query, onlyNew, onlyFollowed, minScore, sortNewest, companyFilter)
+    val key = listOf(countries, query, onlyFollowed, minScore, companyFilter)
     LaunchedEffect(key) {
         if (fs.lastKey != null && fs.lastKey != key) listState.scrollToItem(0)
         fs.lastKey = key
@@ -253,12 +244,20 @@ private fun JobList(
                 { Text(if (countries.isEmpty()) "Country" else countries.sorted().joinToString(", ").let { if (it.length > 24) "${countries.size} countries" else it }) },
                 leadingIcon = { Icon(Icons.Default.Public, null, Modifier.size(16.dp)) },
                 trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, Modifier.size(18.dp)) })
-            Region.entries.forEach { r -> FilterChip(region == r, { region = r }, { Text(r.label) }) }
-            FilterChip(onlyNew, { onlyNew = !onlyNew }, { Text("New (48h)") })
             FilterChip(onlyFollowed, { onlyFollowed = !onlyFollowed }, { Text("★ Following") })
-            MinScore.entries.forEach { m -> FilterChip(minScore == m, { minScore = m }, { Text(m.label) }) }
-            FilterChip(sortNewest, { sortNewest = !sortNewest }, { Text(if (sortNewest) "Newest first" else "Preferred countries first") },
-                leadingIcon = { Icon(Icons.Default.SwapVert, null, Modifier.size(16.dp)) })
+            Box {
+                FilterChip(minScore > 0, { pickScore = true }, { Text(if (minScore == 0) "Match %" else "$minScore%+ match") },
+                    trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, Modifier.size(18.dp)) })
+                DropdownMenu(pickScore, { pickScore = false }) {
+                    MATCH_LEVELS.forEach { v ->
+                        DropdownMenuItem(
+                            text = { Text(if (v == 0) "All matches" else "$v% and above") },
+                            onClick = { minScore = v; pickScore = false },
+                            leadingIcon = { if (v == minScore) Icon(Icons.Default.Check, null) },
+                        )
+                    }
+                }
+            }
         }
         Text("${shown.size} jobs", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp))
