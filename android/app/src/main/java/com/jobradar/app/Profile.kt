@@ -88,12 +88,51 @@ data class Profile(
     }
 }
 
+data class Person(val id: String, val name: String)
+
+/** Several people can keep their own resume on one phone. */
 class ProfileStore(ctx: Context) {
     private val sp = ctx.getSharedPreferences("profile", Context.MODE_PRIVATE)
 
-    fun load(): Profile = sp.getString("p", null)?.let { runCatching { Profile.from(JSONObject(it)) }.getOrNull() } ?: Profile.DEFAULT
+    init {
+        // first version kept one profile under "p": it becomes person "me"
+        if (!sp.contains("people")) {
+            val old = sp.getString("p", null)
+            if (old != null) {
+                val name = runCatching { JSONObject(old).optString("name") }.getOrDefault("").ifBlank { "Me" }
+                sp.edit().putString("people", JSONArray().put(JSONObject().put("id", "me").put("name", name)).toString())
+                    .putString("p_me", old).putString("active", "me").apply()
+            }
+        }
+    }
 
-    fun save(p: Profile) = sp.edit().putString("p", p.toJson().toString()).apply()
+    fun people(): List<Person> = JSONArray(sp.getString("people", "[]")!!).let { a ->
+        List(a.length()) { a.getJSONObject(it).let { o -> Person(o.getString("id"), o.optString("name")) } }
+    }
+
+    var active: String?
+        get() = sp.getString("active", null)?.takeIf { id -> people().any { it.id == id } } ?: people().firstOrNull()?.id
+        set(v) = sp.edit().putString("active", v).apply()
+
+    fun load(id: String): Profile = sp.getString("p_$id", null)?.let { runCatching { Profile.from(JSONObject(it)) }.getOrNull() } ?: Profile()
+
+    fun save(id: String, p: Profile) {
+        val list = people().map { if (it.id == id) it.copy(name = p.name.ifBlank { it.name }) else it }
+        sp.edit().putString("p_$id", p.toJson().toString()).putString("people", toJson(list)).apply()
+    }
+
+    fun add(name: String): String {
+        val id = "p" + System.currentTimeMillis().toString(36)
+        sp.edit().putString("people", toJson(people() + Person(id, name.ifBlank { "Person ${people().size + 1}" }))).putString("active", id).apply()
+        return id
+    }
+
+    fun delete(id: String) {
+        sp.edit().putString("people", toJson(people().filter { it.id != id })).remove("p_$id").apply()
+        if (sp.getString("active", null) == id) active = people().firstOrNull()?.id
+    }
+
+    private fun toJson(list: List<Person>) = JSONArray(list.map { JSONObject().put("id", it.id).put("name", it.name) }).toString()
 }
 
 fun splitList(text: String): List<String> = text.split(",", "\n").map { it.trim() }.filter { it.isNotEmpty() }.distinctBy { it.lowercase() }

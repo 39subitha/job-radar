@@ -22,6 +22,9 @@ import androidx.core.content.FileProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.text.PDFTextStripper
 import org.json.JSONObject
 import java.io.File
 
@@ -44,7 +47,7 @@ private data class Draft(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ProfileScreen(profile: Profile, gaps: List<Pair<String, Int>>, onSave: (Profile) -> Unit) {
+fun ProfileScreen(profile: Profile, gaps: List<Pair<String, Int>>, canDelete: Boolean, onSave: (Profile) -> Unit, onDelete: () -> Unit) {
     val ctx = LocalContext.current
     val scope = rememberCoroutineScope()
     var d by remember(profile) { mutableStateOf(Draft(profile)) }
@@ -59,11 +62,60 @@ fun ProfileScreen(profile: Profile, gaps: List<Pair<String, Int>>, onSave: (Prof
             .onFailure { Toast.makeText(ctx, "Not a Job Radar profile file", Toast.LENGTH_LONG).show() }
     }
 
+    var reading by remember { mutableStateOf(false) }
+    var confirmDelete by remember { mutableStateOf(false) }
+    val uploader = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        reading = true
+        scope.launch {
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    val type = ctx.contentResolver.getType(uri).orEmpty()
+                    val name = uri.lastPathSegment.orEmpty().lowercase()
+                    val text = ctx.contentResolver.openInputStream(uri)!!.use { input ->
+                        when {
+                            "pdf" in type || name.endsWith(".pdf") -> {
+                                PDFBoxResourceLoader.init(ctx.applicationContext)
+                                PDDocument.load(input).use { PDFTextStripper().getText(it) }
+                            }
+                            "word" in type || "officedocument" in type || name.endsWith(".docx") -> ResumeParser.docxText(input)
+                            else -> input.bufferedReader().readText()
+                        }
+                    }
+                    ResumeParser.parse(text)
+                }
+            }.onSuccess { r ->
+                // keep answers the resume does not contain
+                val merged = r.copy(
+                    currentCtc = profile.currentCtc, expectedCtc = profile.expectedCtc, visaStatus = profile.visaStatus,
+                    noticePeriod = r.noticePeriod.ifBlank { profile.noticePeriod }, relocation = r.relocation.ifBlank { profile.relocation },
+                    linkedin = r.linkedin.ifBlank { profile.linkedin },
+                    preferredCountries = r.preferredCountries.ifEmpty { profile.preferredCountries },
+                )
+                onSave(merged)
+                Toast.makeText(ctx, "Resume read: ${r.keySkills.size + r.otherSkills.size} skills, ${r.experience.size} jobs, " +
+                    "${r.years} yrs. Please check the details below.", Toast.LENGTH_LONG).show()
+            }.onFailure {
+                Toast.makeText(ctx, "Could not read this file. Use a Word (.docx), PDF or text resume.", Toast.LENGTH_LONG).show()
+            }
+            reading = false
+        }
+    }
+
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 12.dp).padding(bottom = 90.dp)) {
-            Text("Your resume and job preferences. Matching scores use this profile. It stays only on this phone.",
+            Text("Upload a resume: the app reads it, searches for matching jobs and ranks them by match %. You can correct anything below. It stays only on this phone.",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(vertical = 8.dp))
+            Button(
+                { uploader.launch(arrayOf("application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword", "text/plain")) },
+                Modifier.fillMaxWidth(), enabled = !reading,
+            ) {
+                if (reading) CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp) else Icon(Icons.Default.UploadFile, null)
+                Spacer(Modifier.width(8.dp))
+                Text(if (reading) "Reading resume…" else if (profile.keySkills.isEmpty()) "Upload resume (PDF / Word)" else "Upload new resume (PDF / Word)")
+            }
+            Spacer(Modifier.height(8.dp))
 
             // ---- resume actions
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -121,9 +173,9 @@ fun ProfileScreen(profile: Profile, gaps: List<Pair<String, Int>>, onSave: (Prof
             Field("Other skills", d.otherSkills, lines = 3) { d = d.copy(otherSkills = it) }
 
             Section("Jobs I want")
-            Field("Job title words (e.g. Fixture, Jig, Tooling)", d.targetTitles, lines = 2) { d = d.copy(targetTitles = it) }
+            Field("Job titles to search (e.g. Fixture Design Engineer, Tooling Engineer)", d.targetTitles, lines = 2) { d = d.copy(targetTitles = it) }
             Field("Industries / domains (e.g. Rail, Automotive)", d.domains, lines = 2) { d = d.copy(domains = it) }
-            Field("Preferred countries (shown first)", d.countries) { d = d.copy(countries = it) }
+            Field("Preferred countries", d.countries) { d = d.copy(countries = it) }
 
             Section("Work experience")
             d.p.experience.forEachIndexed { i, e ->
@@ -156,7 +208,22 @@ fun ProfileScreen(profile: Profile, gaps: List<Pair<String, Int>>, onSave: (Prof
             Field("Expected CTC", d.p.expectedCtc) { d = d.copy(p = d.p.copy(expectedCtc = it)) }
             Field("Willing to relocate? (e.g. Yes – India & abroad)", d.p.relocation) { d = d.copy(p = d.p.copy(relocation = it)) }
             Field("Visa / work permit (e.g. Indian citizen, needs visa abroad)", d.p.visaStatus) { d = d.copy(p = d.p.copy(visaStatus = it)) }
+
+            if (canDelete) {
+                Spacer(Modifier.height(24.dp))
+                TextButton({ confirmDelete = true }) {
+                    Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error); Spacer(Modifier.width(6.dp))
+                    Text("Remove this person from the app", color = MaterialTheme.colorScheme.error)
+                }
+            }
         }
+        if (confirmDelete) AlertDialog(
+            onDismissRequest = { confirmDelete = false },
+            title = { Text("Remove ${profile.name.ifBlank { "this person" }}?") },
+            text = { Text("Their resume and job tracker on this phone will be deleted.") },
+            confirmButton = { TextButton({ confirmDelete = false; onDelete() }) { Text("Remove") } },
+            dismissButton = { TextButton({ confirmDelete = false }) { Text("Cancel") } },
+        )
 
         if (changed) {
             ExtendedFloatingActionButton(

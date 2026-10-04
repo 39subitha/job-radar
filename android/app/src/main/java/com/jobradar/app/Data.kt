@@ -94,8 +94,9 @@ data class Tracked(val status: Status, val job: Job, val at: Long)
 enum class Status(val label: String) { SAVED("Saved"), APPLIED("Applied"), INTERVIEW("Interview"), OFFER("Offer"), REJECTED("Rejected") }
 
 /** Things the user decides on this phone: followed companies, application status, what was already seen. */
-class Prefs(ctx: Context) {
-    private val sp = ctx.getSharedPreferences("radar", Context.MODE_PRIVATE)
+/** Per-person data: followed companies, tracker. Person "me" keeps the file from the first version. */
+class Prefs(ctx: Context, personId: String = "me") {
+    private val sp = ctx.getSharedPreferences(if (personId == "me") "radar" else "radar_$personId", Context.MODE_PRIVATE)
 
     var followed: Set<String>
         get() = sp.getStringSet("followed", null) ?: emptySet()

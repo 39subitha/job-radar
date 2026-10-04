@@ -25,8 +25,8 @@ android {
         applicationId = "com.jobradar.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "2.0"
         buildConfigField("String", "DATA_URL", "\"$dataUrl\"")
         // plain http only for local testing builds (-PtestCleartext=true)
         manifestPlaceholders["cleartext"] = (project.findProperty("testCleartext") ?: "false").toString()
@@ -45,7 +45,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
     }
@@ -68,4 +68,6 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
+    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
+    testImplementation("junit:junit:4.13.2")   // read text from PDF resumes, offline
 }
