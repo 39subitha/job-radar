@@ -1,0 +1,717 @@
+[
+ {
+  "name": "Alstom",
+  "industry": "rail",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobsearch.alstom.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [
+   "bogie",
+   "rolling stock"
+  ],
+  "careers": "https://jobsearch.alstom.com"
+ },
+ {
+  "name": "CAF",
+  "industry": "rail",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.caf.net",
+   "locale": "en_US"
+  },
+  "extra_terms": [
+   "utillaje",
+   "útiles"
+  ],
+  "careers": "https://jobs.caf.net"
+ },
+ {
+  "name": "Hitachi (Rail & Energy)",
+  "industry": "rail",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "hitachi",
+   "wdn": 1,
+   "site": "hitachi"
+  },
+  "extra_terms": [
+   "rolling stock",
+   "bogie"
+  ],
+  "careers": "https://hitachi.wd1.myworkdayjobs.com/hitachi"
+ },
+ {
+  "name": "Knorr-Bremse",
+  "industry": "rail",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "careers.knorr-bremse.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [
+   "Vorrichtung",
+   "Vorrichtungskonstrukteur"
+  ],
+  "careers": "https://careers.knorr-bremse.com"
+ },
+ {
+  "name": "Siemens / Siemens Mobility",
+  "industry": "rail",
+  "status": "ok",
+  "type": "avature",
+  "params": {
+   "portal": "https://jobs.siemens.com/en_US/externaljobs"
+  },
+  "extra_terms": [
+   "Vorrichtung",
+   "Vorrichtungskonstrukteur",
+   "rolling stock"
+  ],
+  "careers": "https://jobs.siemens.com/en_US/externaljobs"
+ },
+ {
+  "name": "Stadler Rail",
+  "industry": "rail",
+  "status": "ok",
+  "type": "umantis",
+  "params": {
+   "app_id": "2787",
+   "list_id": "1152481"
+  },
+  "extra_terms": [],
+  "careers": "https://www.stadlerrail.com/en/career/"
+ },
+ {
+  "name": "Talgo",
+  "industry": "rail",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.talgo.com",
+   "locale": "es_ES"
+  },
+  "extra_terms": [
+   "utillaje",
+   "útiles"
+  ],
+  "careers": "https://jobs.talgo.com"
+ },
+ {
+  "name": "Vossloh",
+  "industry": "rail",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "vossloh",
+   "wdn": 3,
+   "site": "Vossloh_External_Careers"
+  },
+  "extra_terms": [],
+  "careers": "https://vossloh.wd3.myworkdayjobs.com/Vossloh_External_Careers"
+ },
+ {
+  "name": "Wabtec",
+  "industry": "rail",
+  "status": "ok",
+  "type": "smartrecruiters",
+  "params": {
+   "company": "Wabtec"
+  },
+  "extra_terms": [
+   "rail"
+  ],
+  "careers": "https://jobs.smartrecruiters.com/Wabtec"
+ },
+ {
+  "name": "Alten",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "smartrecruiters",
+  "params": {
+   "company": "Alten"
+  },
+  "extra_terms": [
+   "outillage",
+   "outilleur"
+  ],
+  "careers": "https://jobs.smartrecruiters.com/Alten"
+ },
+ {
+  "name": "Capgemini",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "capgemini",
+  "params": {},
+  "extra_terms": [],
+  "careers": "https://www.capgemini.com/careers/join-capgemini/job-search/"
+ },
+ {
+  "name": "Cyient",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "zwayam",
+  "params": {
+   "domain": "careers.cyient.com",
+   "company_id": "MTU0ODY="
+  },
+  "extra_terms": [],
+  "careers": "https://careers.cyient.com"
+ },
+ {
+  "name": "Expleo",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "icims",
+  "params": {
+   "hosts": [
+    "expleo-jobs-in-en.icims.com",
+    "expleo-jobs-fr-fr.icims.com",
+    "expleo-jobs-de-de.icims.com",
+    "expleo-jobs-gb-en.icims.com"
+   ]
+  },
+  "extra_terms": [
+   "outillage",
+   "outilleur"
+  ],
+  "careers": "https://expleo.com/global/en/careers/"
+ },
+ {
+  "name": "HCLTech",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "careers.hcltech.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://careers.hcltech.com"
+ },
+ {
+  "name": "L&T Technology Services",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "sensehq",
+  "params": {
+   "sub": "ltts"
+  },
+  "extra_terms": [],
+  "careers": "https://www.ltts.com/careers"
+ },
+ {
+  "name": "Quest Global",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "phenom",
+  "params": {
+   "base": "https://careers.quest-global.com/global/en"
+  },
+  "extra_terms": [],
+  "careers": "https://careers.quest-global.com/global/en"
+ },
+ {
+  "name": "Segula Technologies",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "digitalrecruiters",
+  "params": {
+   "domain": "careers.segulatechnologies.com"
+  },
+  "extra_terms": [
+   "outillage",
+   "outilleur"
+  ],
+  "careers": "https://careers.segulatechnologies.com"
+ },
+ {
+  "name": "Tata Technologies",
+  "industry": "engineering-services",
+  "status": "ok",
+  "type": "ripplehire",
+  "params": {
+   "sub": "tatatechnologies",
+   "token": "jjZIWXgr7fPCCF6T5yk4"
+  },
+  "extra_terms": [],
+  "careers": "https://www.tatatechnologies.com/careers/"
+ },
+ {
+  "name": "Aptiv",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "aptiv",
+   "wdn": 5,
+   "site": "APTIV_CAREERS"
+  },
+  "extra_terms": [],
+  "careers": "https://aptiv.wd5.myworkdayjobs.com/APTIV_CAREERS"
+ },
+ {
+  "name": "BorgWarner",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "borgwarner",
+   "wdn": 5,
+   "site": "BorgWarner_Careers"
+  },
+  "extra_terms": [],
+  "careers": "https://borgwarner.wd5.myworkdayjobs.com/BorgWarner_Careers"
+ },
+ {
+  "name": "Bosch",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "smartrecruiters",
+  "params": {
+   "company": "BoschGroup"
+  },
+  "extra_terms": [
+   "Vorrichtung",
+   "Vorrichtungskonstrukteur"
+  ],
+  "careers": "https://jobs.smartrecruiters.com/BoschGroup"
+ },
+ {
+  "name": "Continental",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "smartrecruiters",
+  "params": {
+   "company": "Continental"
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.smartrecruiters.com/Continental"
+ },
+ {
+  "name": "Lucid Motors",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "greenhouse",
+  "params": {
+   "token": "lucidmotors"
+  },
+  "extra_terms": [],
+  "careers": "https://boards.greenhouse.io/lucidmotors"
+ },
+ {
+  "name": "Magna",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "magna",
+   "wdn": 3,
+   "site": "Magna"
+  },
+  "extra_terms": [],
+  "careers": "https://magna.wd3.myworkdayjobs.com/Magna"
+ },
+ {
+  "name": "Mahindra",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.mahindracareers.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.mahindracareers.com"
+ },
+ {
+  "name": "Schaeffler",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.schaeffler.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [
+   "Vorrichtung",
+   "Vorrichtungskonstrukteur"
+  ],
+  "careers": "https://jobs.schaeffler.com"
+ },
+ {
+  "name": "Tata Motors",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "careers.tatamotors.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://careers.tatamotors.com"
+ },
+ {
+  "name": "Valeo",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "valeo",
+   "wdn": 3,
+   "site": "valeo_jobs"
+  },
+  "extra_terms": [],
+  "careers": "https://valeo.wd3.myworkdayjobs.com/valeo_jobs"
+ },
+ {
+  "name": "Volvo Group",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.volvogroup.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.volvogroup.com"
+ },
+ {
+  "name": "ZF",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.zf.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [
+   "Vorrichtung",
+   "Vorrichtungskonstrukteur"
+  ],
+  "careers": "https://jobs.zf.com"
+ },
+ {
+  "name": "Zoox",
+  "industry": "automotive",
+  "status": "ok",
+  "type": "lever",
+  "params": {
+   "company": "zoox"
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.lever.co/zoox"
+ },
+ {
+  "name": "ABB",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "abb",
+   "wdn": 3,
+   "site": "external_career_page"
+  },
+  "extra_terms": [],
+  "careers": "https://abb.wd3.myworkdayjobs.com/external_career_page"
+ },
+ {
+  "name": "CNH",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "join.cnh.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://join.cnh.com"
+ },
+ {
+  "name": "Caterpillar",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "cat",
+   "wdn": 5,
+   "site": "CaterpillarCareers"
+  },
+  "extra_terms": [],
+  "careers": "https://cat.wd5.myworkdayjobs.com/CaterpillarCareers"
+ },
+ {
+  "name": "Eaton",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "eightfold",
+  "params": {
+   "host": "eaton.eightfold.ai",
+   "domain": "eaton.com"
+  },
+  "extra_terms": [],
+  "careers": "https://eaton.eightfold.ai/careers"
+ },
+ {
+  "name": "John Deere",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.deere.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.deere.com"
+ },
+ {
+  "name": "Komatsu",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "komatsu.jobs",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://komatsu.jobs"
+ },
+ {
+  "name": "Liebherr",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "liebherr",
+  "params": {},
+  "extra_terms": [
+   "Vorrichtung",
+   "Vorrichtungskonstrukteur",
+   "tool"
+  ],
+  "careers": "https://www.liebherr.com/en-int/careers/job-vacancies-5370609"
+ },
+ {
+  "name": "Siemens Energy",
+  "industry": "industrial",
+  "status": "ok",
+  "type": "avature_folder",
+  "params": {
+   "feeds": [
+    "https://jobs.siemens-energy.com/en_US/jobs/SearchJobsEngineering/feed/?folderRecordsPerPage=20"
+   ]
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.siemens-energy.com"
+ },
+ {
+  "name": "Airbus",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "ag",
+   "wdn": 3,
+   "site": "Airbus"
+  },
+  "extra_terms": [],
+  "careers": "https://ag.wd3.myworkdayjobs.com/Airbus"
+ },
+ {
+  "name": "Anduril Industries",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "greenhouse",
+  "params": {
+   "token": "andurilindustries"
+  },
+  "extra_terms": [],
+  "careers": "https://boards.greenhouse.io/andurilindustries"
+ },
+ {
+  "name": "Boeing",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "boeing",
+   "wdn": 1,
+   "site": "EXTERNAL_CAREERS"
+  },
+  "extra_terms": [],
+  "careers": "https://boeing.wd1.myworkdayjobs.com/EXTERNAL_CAREERS"
+ },
+ {
+  "name": "Bombardier",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "successfactors",
+  "params": {
+   "host": "jobs.bombardier.com",
+   "locale": "en_US"
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.bombardier.com"
+ },
+ {
+  "name": "Collins Aerospace / RTX",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "globalhr",
+   "wdn": 5,
+   "site": "REC_RTX_Ext_Gateway"
+  },
+  "extra_terms": [],
+  "careers": "https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway"
+ },
+ {
+  "name": "GE Aerospace",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "geaerospace",
+   "wdn": 5,
+   "site": "GE_ExternalSite"
+  },
+  "extra_terms": [],
+  "careers": "https://geaerospace.wd5.myworkdayjobs.com/GE_ExternalSite"
+ },
+ {
+  "name": "Hermeus",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "lever",
+  "params": {
+   "company": "hermeus"
+  },
+  "extra_terms": [],
+  "careers": "https://jobs.lever.co/hermeus"
+ },
+ {
+  "name": "Honeywell",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "oracle",
+  "params": {
+   "host": "ibqbjb.fa.ocs.oraclecloud.com",
+   "site": "CX_1",
+   "public_base": "https://careers.honeywell.com/en/sites/Honeywell"
+  },
+  "extra_terms": [],
+  "careers": "https://careers.honeywell.com/en/sites/Honeywell"
+ },
+ {
+  "name": "Northrop Grumman",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "ngc",
+   "wdn": 1,
+   "site": "Northrop_Grumman_External_Site"
+  },
+  "extra_terms": [],
+  "careers": "https://ngc.wd1.myworkdayjobs.com/Northrop_Grumman_External_Site"
+ },
+ {
+  "name": "Relativity Space",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "greenhouse",
+  "params": {
+   "token": "relativity"
+  },
+  "extra_terms": [],
+  "careers": "https://boards.greenhouse.io/relativity"
+ },
+ {
+  "name": "Rocket Lab",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "greenhouse",
+  "params": {
+   "token": "rocketlab"
+  },
+  "extra_terms": [],
+  "careers": "https://boards.greenhouse.io/rocketlab"
+ },
+ {
+  "name": "Rolls-Royce",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "rollsroyce",
+   "wdn": 3,
+   "site": "professional"
+  },
+  "extra_terms": [],
+  "careers": "https://rollsroyce.wd3.myworkdayjobs.com/professional"
+ },
+ {
+  "name": "SpaceX",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "greenhouse",
+  "params": {
+   "token": "spacex"
+  },
+  "extra_terms": [],
+  "careers": "https://boards.greenhouse.io/spacex"
+ },
+ {
+  "name": "Thales",
+  "industry": "aerospace",
+  "status": "ok",
+  "type": "workday",
+  "params": {
+   "tenant": "thales",
+   "wdn": 3,
+   "site": "Careers"
+  },
+  "extra_terms": [],
+  "careers": "https://thales.wd3.myworkdayjobs.com/Careers"
+ },
+ {
+  "name": "BEML",
+  "industry": "rail",
+  "status": "unsupported",
+  "notes": "bemlindia.in/careers only publishes PDF notifications (wp-content/plugins/career/...pdf); no feed. Could monitor page for new PDF links."
+ },
+ {
+  "name": "Hyundai Rotem",
+  "industry": "rail",
+  "status": "unsupported",
+  "notes": "Uses hyundai-rotem.recruiter.co.kr (Midas JOBFLEX, Next.js client-rendered, Korean-only, very slow/timeouts from here); recruitment is periodic Korean batch hiring."
+ },
+ {
+  "name": "Medha Servo Drives",
+  "industry": "rail",
+  "status": "unsupported",
+  "notes": "medha.com / medhaindia.com unreachable from this machine (connection errors); no ATS found."
+ },
+ {
+  "name": "Titagarh Rail Systems",
+  "industry": "rail",
+  "status": "unsupported",
+  "notes": "titagarh.in has no careers listing/ATS (careers page 404); hiring via LinkedIn/Naukri."
+ },
+ {
+  "name": "Tech Mahindra",
+  "industry": "engineering-services",
+  "status": "unsupported",
+  "notes": "careers.techmahindra.com is ASP.NET WebForms (__VIEWSTATE postbacks); listing not exposed via JSON/RSS; only a skill-autocomplete WebMethod."
+ },
+ {
+  "name": "Safran",
+  "industry": "aerospace",
+  "status": "unsupported",
+  "notes": "Cloudflare 403 'Attention Required' on www.safran-group.com/jobs from this machine; no Workday/SR tenant found."
+ }
+]
