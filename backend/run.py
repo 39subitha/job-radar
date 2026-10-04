@@ -54,7 +54,7 @@ def _one(c):
                     "note": c.get("notes", "")[:140], "jobs": 0}
     t0 = time.time()
     try:
-        found = sources.fetch_company(c, score.PROFILE["search_terms"], score.title_is_relevant)
+        found = sources.fetch_company(c, score.all_search_terms(), score.relevant_to_anyone)
         print(f"  {c['name']:<28} {len(found):>3} relevant  ({time.time() - t0:.0f}s)", flush=True)
         return found, {"name": c["name"], "industry": c.get("industry", ""), "status": "ok",
                        "jobs": len(found), "careers": c.get("careers", "")}
@@ -73,7 +73,7 @@ def collect(companies, only=None):
             status.append(st)
     if not only:
         try:
-            extra = sources.fetch_aggregators(score.PROFILE["search_terms"], score.title_is_relevant)
+            extra = sources.fetch_aggregators(score.all_search_terms(), score.relevant_to_anyone)
             print(f"  job-search APIs: {len(extra)} relevant")
             jobs += extra
         except Exception:
@@ -99,7 +99,11 @@ def main():
     fresh = {}
     for r in raw:
         desc = clean_text(r.get("desc", ""))[:DESC_LIMIT]
-        s, chips, yrs = score.score(r["title"], desc)
+        # one score per friend; keep the job if it suits anyone
+        per = {pid: score.score(r["title"], desc, P) for pid, P in score.PROFILES.items()}
+        scores = {pid: v[0] for pid, v in per.items()}
+        best = max(per, key=lambda pid: scores[pid])
+        s, chips, yrs = per[best]
         if s < MIN_SCORE:
             continue
         jid = job_id(r["company"], r.get("url", ""), r["title"], r.get("location", ""))
@@ -112,7 +116,7 @@ def main():
             "id": jid, "title": r["title"].strip(), "company": r["company"],
             "location": (r.get("location") or "").strip(), "url": r.get("url", ""),
             "posted": r.get("posted") or "", "desc": desc, "score": s, "matched": chips,
-            "min_years": yrs, "source": r.get("source", ""), "india": score.is_home(r.get("location", "")),
+            "min_years": yrs, "scores": scores, "source": r.get("source", ""), "india": score.is_home(r.get("location", "")),
             "first_seen": old_by_id.get(jid, {}).get("first_seen", ts), "last_seen": ts, "misses": 0,
         }
 
@@ -136,13 +140,14 @@ def main():
     # India first, then abroad; best match first inside each
     out_jobs = sorted(merged.values(), key=lambda j: (not j.get("india"), -j["score"], j["first_seen"]))
     new_jobs = [j for j in out_jobs if j["id"] not in old_by_id]
-    out = {"generated": ts, "profile": score.PROFILE["label"], "companies": status, "jobs": out_jobs}
+    out = {"generated": ts, "profiles": [P["label"] for P in score.PROFILES.values()], "companies": status, "jobs": out_jobs}
     DATA.parent.mkdir(exist_ok=True)
     DATA.write_text(json.dumps(out, ensure_ascii=False, indent=0))
     print(f"Saved {len(out_jobs)} jobs ({len(new_jobs)} new) -> {DATA}")
 
     if not args.no_email and not args.only:
-        emailer.send_digest(out_jobs if args.email_all else new_jobs, out_jobs, status)
+        for P in score.PROFILES.values():
+            emailer.send_digest(P, out_jobs if args.email_all else new_jobs, out_jobs, status)
 
 
 if __name__ == "__main__":

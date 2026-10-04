@@ -1,5 +1,24 @@
 {
+  "id": "friend1",
+  "enabled": true,
   "label": "Tooling & Fixture Design Engineer",
+  "email_secret": "EMAIL_FRIEND1",
+  "preferred_countries": [
+    "India",
+    "South Korea"
+  ],
+  "title_exact": [
+    "fixture",
+    "jig",
+    "tool design",
+    "tool designer",
+    "tooling engineer",
+    "outillage",
+    "utillaje",
+    "vorrichtung",
+    "치공구",
+    "지그"
+  ],
   "experience_years": 3,
   "search_terms": [
     "fixture",

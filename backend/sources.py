@@ -14,7 +14,7 @@ import requests
 
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"
 TIMEOUT = 25
-COMPANY_BUDGET = 240  # seconds per company; slow sites get cut off, not the whole run
+COMPANY_BUDGET = 400  # seconds per company; slow sites get cut off, not the whole run
 MAX_DETAIL_CALLS = 30   # per company, to stay polite
 
 

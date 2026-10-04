@@ -34,6 +34,9 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          EMAIL_FRIEND1: ${{ secrets.EMAIL_FRIEND1 }}
+          EMAIL_FRIEND2: ${{ secrets.EMAIL_FRIEND2 }}
+          EMAIL_FRIEND3: ${{ secrets.EMAIL_FRIEND3 }}
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           JOOBLE_KEY: ${{ secrets.JOOBLE_KEY }}
