@@ -84,6 +84,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-email", action="store_true")
     ap.add_argument("--only")
+    ap.add_argument("--email-all", action="store_true", help="email all open jobs, not only new ones")
     args = ap.parse_args()
 
     companies = json.loads(COMPANIES.read_text())
@@ -134,7 +135,7 @@ def main():
     print(f"Saved {len(out_jobs)} jobs ({len(new_jobs)} new) -> {DATA}")
 
     if not args.no_email and not args.only:
-        emailer.send_digest(new_jobs, out_jobs, status)
+        emailer.send_digest(out_jobs if args.email_all else new_jobs, out_jobs, status)
 
 
 if __name__ == "__main__":
