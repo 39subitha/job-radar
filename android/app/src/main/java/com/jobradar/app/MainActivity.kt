@@ -13,6 +13,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -83,15 +85,11 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
     }
     LaunchedEffect(Unit) { refresh() }
 
-    val current = open
-    if (current != null) {
-        BackHandler { open = null }
-        JobDetail(current, tracked[current.id]?.first, onBack = { open = null }) { st ->
-            prefs.setStatus(current, st); tracked = prefs.tracked()
-        }
-        return
-    }
+    // kept here (not inside the Jobs tab) so filters and scroll position survive opening a job or switching tabs
+    val filters = remember { JobFilters() }
+    val listState = rememberLazyListState()
 
+    Box(Modifier.fillMaxSize()) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -143,7 +141,7 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
                 return@Column
             }
             when (tab) {
-                Tab.JOBS -> JobList(f.jobs, followed, tracked, previousVisit, companyFilter,
+                Tab.JOBS -> JobList(f.jobs, filters, listState, followed, tracked, previousVisit, companyFilter,
                     onClearCompany = { companyFilter = null }) { open = it }
                 Tab.COMPANIES -> CompanyList(f, followed,
                     onToggle = { name ->
@@ -155,6 +153,17 @@ private fun App(repo: Repo, prefs: Prefs, previousVisit: String) {
             }
         }
     }
+
+    val current = open
+    if (current != null) {
+        BackHandler { open = null }
+        Surface(Modifier.fillMaxSize()) {
+            JobDetail(current, tracked[current.id]?.first, onBack = { open = null }) { st ->
+                prefs.setStatus(current, st); tracked = prefs.tracked()
+            }
+        }
+    }
+    }
 }
 
 // ---------------------------------------------------------------- Jobs
@@ -163,31 +172,52 @@ private enum class Region(val label: String) { ALL("India + abroad"), INDIA("ðŸ‡
 
 private enum class MinScore(val label: String, val v: Int) { ALL("All", 0), GOOD("50%+", 50), TOP("70%+", 70) }
 
+private class JobFilters {
+    var query by mutableStateOf("")
+    var onlyNew by mutableStateOf(false)
+    var onlyFollowed by mutableStateOf(false)
+    var minScore by mutableStateOf(MinScore.ALL)
+    var region by mutableStateOf(Region.ALL)
+    var countries by mutableStateOf(emptySet<String>())
+    var sortNewest by mutableStateOf(false)
+    var lastKey: Any? = null   // filter values the list was last shown with
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun JobList(
-    jobs: List<Job>, followed: Set<String>, tracked: Map<String, Pair<Status, Job>>, previousVisit: String,
-    companyFilter: String?, onClearCompany: () -> Unit, onOpen: (Job) -> Unit,
+    jobs: List<Job>, fs: JobFilters, listState: LazyListState, followed: Set<String>, tracked: Map<String, Pair<Status, Job>>,
+    previousVisit: String, companyFilter: String?, onClearCompany: () -> Unit, onOpen: (Job) -> Unit,
 ) {
-    var query by rememberSaveable { mutableStateOf("") }
-    var onlyNew by rememberSaveable { mutableStateOf(false) }
-    var onlyFollowed by rememberSaveable { mutableStateOf(false) }
-    var minScore by rememberSaveable { mutableStateOf(MinScore.ALL) }
-    var region by rememberSaveable { mutableStateOf(Region.ALL) }
-    var sortNewest by rememberSaveable { mutableStateOf(false) }
+    var query by fs::query
+    var onlyNew by fs::onlyNew
+    var onlyFollowed by fs::onlyFollowed
+    var minScore by fs::minScore
+    var region by fs::region
+    var countries by fs::countries
+    var sortNewest by fs::sortNewest
+    var pickCountry by remember { mutableStateOf(false) }
 
-    val shown = remember(jobs, region, query, onlyNew, onlyFollowed, minScore, sortNewest, followed, companyFilter) {
+    val shown = remember(jobs, region, countries, query, onlyNew, onlyFollowed, minScore, sortNewest, followed, companyFilter) {
         val q = query.trim().lowercase()
         jobs.filter { j ->
             (companyFilter == null || j.company == companyFilter) &&
                 j.score >= minScore.v &&
                 (region == Region.ALL || (region == Region.INDIA) == j.india) &&
+                (countries.isEmpty() || j.country in countries) &&
                 (!onlyNew || isWithinHours(j.firstSeen, 48)) &&
                 (!onlyFollowed || j.company in followed) &&
                 (q.isEmpty() || q.split(" ").all { w ->
-                    j.title.lowercase().contains(w) || j.company.lowercase().contains(w) || j.location.lowercase().contains(w)
+                    j.title.lowercase().contains(w) || j.company.lowercase().contains(w) || j.location.lowercase().contains(w) || j.country.lowercase().contains(w)
                 })
         }.let { l -> if (sortNewest) l.sortedByDescending { it.firstSeen } else l.sortedWith(compareBy<Job>({ !it.india }, { -it.score })) }
+    }
+
+    // new filter -> start from the top; coming back from a job or another tab -> stay where the user was
+    val key = listOf(region, countries, query, onlyNew, onlyFollowed, minScore, sortNewest, companyFilter)
+    LaunchedEffect(key) {
+        if (fs.lastKey != null && fs.lastKey != key) listState.scrollToItem(0)
+        fs.lastKey = key
     }
 
     Column {
@@ -202,6 +232,10 @@ private fun JobList(
             if (companyFilter != null) {
                 InputChip(true, onClearCompany, { Text(companyFilter) }, trailingIcon = { Icon(Icons.Default.Close, null, Modifier.size(16.dp)) })
             }
+            FilterChip(countries.isNotEmpty(), { pickCountry = true },
+                { Text(if (countries.isEmpty()) "Country" else countries.sorted().joinToString(", ").let { if (it.length > 24) "${countries.size} countries" else it }) },
+                leadingIcon = { Icon(Icons.Default.Public, null, Modifier.size(16.dp)) },
+                trailingIcon = { Icon(Icons.Default.ArrowDropDown, null, Modifier.size(18.dp)) })
             Region.entries.forEach { r -> FilterChip(region == r, { region = r }, { Text(r.label) }) }
             FilterChip(onlyNew, { onlyNew = !onlyNew }, { Text("New (48h)") })
             FilterChip(onlyFollowed, { onlyFollowed = !onlyFollowed }, { Text("â˜… Following") })
@@ -211,7 +245,7 @@ private fun JobList(
         }
         Text("${shown.size} jobs", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp))
-        LazyColumn(contentPadding = PaddingValues(bottom = 16.dp)) {
+        LazyColumn(state = listState, contentPadding = PaddingValues(bottom = 16.dp)) {
             items(shown, key = { it.id }) { j ->
                 JobCard(j, j.company in followed, tracked[j.id]?.first, isNewerThan(j.firstSeen, previousVisit)) { onOpen(j) }
             }
@@ -220,6 +254,35 @@ private fun JobList(
             }
         }
     }
+    if (pickCountry) CountryPicker(jobs, countries, onDone = { countries = it; pickCountry = false }, onDismiss = { pickCountry = false })
+}
+
+@Composable
+private fun CountryPicker(jobs: List<Job>, selected: Set<String>, onDone: (Set<String>) -> Unit, onDismiss: () -> Unit) {
+    // India first, then by number of jobs
+    val counts = remember(jobs) {
+        jobs.groupingBy { it.country }.eachCount().toList()
+            .sortedWith(compareBy({ it.first != "India" }, { it.first == "Other" }, { -it.second }))
+    }
+    var picked by remember { mutableStateOf(selected) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Countries") },
+        text = {
+            LazyColumn(Modifier.heightIn(max = 420.dp)) {
+                items(counts, key = { it.first }) { (c, n) ->
+                    Row(Modifier.fillMaxWidth().clickable { picked = if (c in picked) picked - c else picked + c },
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(c in picked, { picked = if (c in picked) picked - c else picked + c })
+                        Text(c, Modifier.weight(1f))
+                        Text("$n", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton({ onDone(picked) }) { Text("Show jobs") } },
+        dismissButton = { TextButton({ onDone(emptySet()) }) { Text("All countries") } },
+    )
 }
 
 @Composable

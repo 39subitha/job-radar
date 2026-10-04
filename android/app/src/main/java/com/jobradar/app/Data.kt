@@ -22,12 +22,13 @@ data class Job(
     val minYears: Int?,
     val firstSeen: String,
     val india: Boolean,
+    val country: String,
 ) {
     fun toJson(): JSONObject = JSONObject()
         .put("id", id).put("title", title).put("company", company).put("location", location)
         .put("url", url).put("posted", posted).put("desc", desc).put("score", score)
         .put("matched", JSONArray(matched)).put("min_years", minYears ?: JSONObject.NULL)
-        .put("first_seen", firstSeen).put("india", india)
+        .put("first_seen", firstSeen).put("india", india).put("country", country)
 
     companion object {
         fun from(o: JSONObject) = Job(
@@ -43,6 +44,7 @@ data class Job(
             minYears = if (o.isNull("min_years")) null else o.optInt("min_years"),
             firstSeen = o.optString("first_seen"),
             india = o.optBoolean("india"),
+            country = o.optString("country").ifBlank { if (o.optBoolean("india")) "India" else "Other" },
         )
     }
 }

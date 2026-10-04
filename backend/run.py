@@ -16,6 +16,7 @@ from pathlib import Path
 import score
 import sources
 import emailer
+from country import country_of
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data" / "jobs.json"
@@ -125,6 +126,9 @@ def main():
             j["misses"] = j.get("misses", 0) + 1
         if j.get("misses", 0) < DROP_AFTER_MISSES:
             merged[jid] = j
+
+    for j in merged.values():
+        j["country"] = country_of(j.get("location", ""), j.get("india", False))
 
     # India first, then abroad; best match first inside each
     out_jobs = sorted(merged.values(), key=lambda j: (not j.get("india"), -j["score"], j["first_seen"]))

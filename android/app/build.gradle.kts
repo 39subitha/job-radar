@@ -25,8 +25,8 @@ android {
         applicationId = "com.jobradar.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
         buildConfigField("String", "DATA_URL", "\"$dataUrl\"")
         // plain http only for local testing builds (-PtestCleartext=true)
         manifestPlaceholders["cleartext"] = (project.findProperty("testCleartext") ?: "false").toString()
